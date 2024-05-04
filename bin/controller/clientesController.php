@@ -26,22 +26,22 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             $cedula = $_POST['cedula'];
             $nombre = $_POST['nombre'];
             $telefono = $_POST['telefono'];
-            $membresia = $_POST['membresias'];
+            $plan = $_POST['planes'];
             
-            echo $obj->registerClient($cedula,$nombre,$telefono,$membresia);
+            echo $obj->registerClient($cedula,$nombre,$telefono,$plan);
             exit;
         }
-        if ($accion === 'valor_membresia') {
+        if ($accion === 'valor_plan') {
             
-            $membresia = $_POST['membresias'];
+            $plan = $_POST['planes'];
             
-            echo $obj->valorMembresia($membresia);
+            echo $obj->valorPlan($plan);
             exit;
         }
         exit;
     }
 
-    $membresias = $obj->getMembresias();
+    $planes = $obj->getPlanes();
 
     require_once($config->_Dir_View_() . $pagina . $config->_VIEW_());
 } else {

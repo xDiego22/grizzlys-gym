@@ -37,7 +37,7 @@
                                         <th>#</th>
                                         <th>Cedula</th>
                                         <th>Nombre</th>
-                                        <th>Membresia</th>
+                                        <th>Plan</th>
                                         <th>Tlf.</th>
                                         <th>Opciones</th>
                                     </tr>
@@ -107,24 +107,24 @@
                                 <div class="col-8">
                                     <div class="form-floating mb-3">
 
-                                        <select class="form-control validar" name="membresias" id="membresias" aria-label="Floating label membresias">
+                                        <select class="form-control validar" name="planes" id="planes" aria-label="Floating label planes">
                                             <option value="" hidden selected>Seleccionar opcion</option>
 
-                                            <?php foreach ($membresias as $membresia) : ?>
+                                            <?php foreach ($planes as $plan) : ?>
 
-                                                <option value="<?= $membresia['id'] ?>"> <?= $membresia['nombre'] ?> </option>
+                                                <option value="<?= $plan['id'] ?>"> <?= $plan['nombre'] ?> </option>
 
                                             <?php endforeach ?>
                                         </select>
-                                        <label for="membresias">Membresia</label>
+                                        <label for="planes">Plan</label>
                                         <div class="invalid-feedback">Por favor ingrese una opcion válida.</div>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control" disabled type="text" id="precio_membresia" placeholder="">
-                                        <label for="precio_membresia" class="form-label">Precio</label>
+                                        <input class="form-control" disabled type="text" id="precio_plan" placeholder="">
+                                        <label for="precio_plan" class="form-label">Precio</label>
 
                                     </div>
                                 </div>

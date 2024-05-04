@@ -22,17 +22,17 @@ $(function () {
     });
 
     
-    $("#membresias").change(function (e) { 
+    $("#planes").change(function (e) { 
         
-        if (!$("#membresias").val()) {
-            $("#precio_membresia").val("");
+        if (!$("#planes").val()) {
+            $("#precio_plan").val("");
             actualizarDeuda();
             return
         }; 
         const data = new FormData();
 
-        data.append("accion", 'valor_membresia');
-        data.append("membresias", $("#membresias").val());
+        data.append("accion", 'valor_plan');
+        data.append("planes", $("#planes").val());
 
         $.ajax({
             async: true,
@@ -46,7 +46,7 @@ $(function () {
 
                 const { valor } = JSON.parse(response);
                 
-                $("#precio_membresia").val(parseFloat(valor) + "$");
+                $("#precio_plan").val(parseFloat(valor) + "$");
                 actualizarDeuda();
             },
             error: function ({ responseText }, status, error) {
@@ -72,7 +72,7 @@ $(function () {
     $("#telefono").keypress((event) => validateKeyPress(event, /^\d{0,10}$/));
     $("#telefono").keyup(() => validateKeyUp($("#telefono"), /^0(4\d{9})$/));
 
-    $("#membresias").change(() => validateKeyUp($("#membresias"), /^[a-zA-Z0-9\s]+$/));
+    $("#planes").change(() => validateKeyUp($("#planes"), /^[a-zA-Z0-9\s]+$/));
 
     $("#monto").keyup(() => validateKeyUp($("#monto"), /^\d+(\.\d)?$/));
 
@@ -115,7 +115,7 @@ $(function () {
             data.append("cedula", $("#cedula").val());
             data.append("nombre", $("#nombre").val());
             data.append("telefono", $("#telefono").val());
-            data.append("membresias", $("#membresias").val());
+            data.append("planes", $("#planes").val());
             data.append("monto", $("#monto").val());
             data.append("fecha_inicio", $("#fecha_inicio").val());
             data.append("fecha_limite", $("#fecha_limite").val());
@@ -209,7 +209,7 @@ $(function () {
 });
 
 function actualizarDeuda() {
-  const precio = parseFloat($("#precio_membresia").val()) || 0;
+  const precio = parseFloat($("#precio_plan").val()) || 0;
   const monto = parseFloat($("#monto").val()) || 0;
 
   const resultado = isNaN(precio) || isNaN(monto) ? "" : precio - monto;
@@ -228,7 +228,7 @@ function validateKeyPress(event, regex) {
 }
 
 function validateKeyUp(inputElement, regex) {
-    const inputValue = inputElement.val();
+    const inputValue = inputElement.val().trim();
     const isValidInput = regex.test(inputValue);
 
     if (isValidInput) {

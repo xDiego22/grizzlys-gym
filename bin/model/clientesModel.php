@@ -11,14 +11,14 @@ class clientesModel extends connectDB{
 
     }
 
-    public function registerClient($cedula, $nombre, $telefono, $membresia){
+    public function registerClient($cedula, $nombre, $telefono, $plan){
         try {
 
             if (
                 !$this->valString('/^[0-9]{7,10}$/', $cedula) ||
                 !$this->valString('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,50}$/', $nombre) ||
                 !$this->valString('/^0(4\d{9})$/', $telefono) ||
-                !$this->valString('/^[0-9]{1,10}$/', $membresia)
+                !$this->valString('/^[0-9]{1,10}$/', $plan)
             ) {
 
                 http_response_code(400);
@@ -34,7 +34,7 @@ class clientesModel extends connectDB{
             $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             
-            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_membresias,fecha_inscripcion, estado) VALUES (?, ?, ?, ?, CURRENT_DATE,'activo')";
+            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_planes,fecha_inscripcion, estado) VALUES (?, ?, ?, ?, CURRENT_DATE,'activo')";
 
             $stmt = $bd->prepare($sql);
 
@@ -42,7 +42,7 @@ class clientesModel extends connectDB{
                 $cedula,
                 $nombre,
                 $telefono,
-                $membresia,
+                $plan,
             ));
 
             http_response_code(200);
@@ -54,17 +54,17 @@ class clientesModel extends connectDB{
         }
     }
 
-    public function valorMembresia($membresia){
+    public function valorPlan($plan){
         try{
             $bd = $this->conexion();
             $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "SELECT valor FROM membresias where id = ?";
+            $sql = "SELECT valor FROM planes where id = ?";
 
             $stmt = $bd->prepare($sql);
 
             $stmt->execute(array(
-                $membresia
+                $plan
             ));
 
             $fila = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,14 +83,14 @@ class clientesModel extends connectDB{
         }
     }
 
-    public function getMembresias(){
+    public function getPlanes(){
         try {
 
 
             $bd = $this->conexion();
             $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "SELECT * FROM membresias";
+            $sql = "SELECT * FROM planes";
 
             $stmt = $bd->prepare($sql);
 
