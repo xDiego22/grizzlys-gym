@@ -1,0 +1,27 @@
+{
+    "name": "diego/grizzlys-gym",
+    "description": "sistema de gestion administrativa grizzlys gym",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "firebase/php-jwt": "^6.10",
+        "phpunit/phpunit": "^11.1",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "license": "001",
+    "autoload": {
+        "psr-4": {
+            "bin\\": "bin/",
+            "config\\": "bin/config",
+            "model\\":"bin/model",
+            "component\\":"bin/component"
+        }
+    },
+    "authors": [
+        {
+            "name": "diego",
+            "email": "diegoaguilar221202@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta"
+}
