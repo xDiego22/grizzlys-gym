@@ -134,7 +134,7 @@
                                 <div class="col-8">
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control validar" type="number" min="0.0" name="monto" id="monto" placeholder="" >
+                                        <input class="form-control validar" type="number" min="0.0" max="200.0" name="monto" id="monto" placeholder="" >
                                         <label for="monto" class="form-label">Monto a pagar</label>
                                         <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
