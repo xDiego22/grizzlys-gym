@@ -268,7 +268,7 @@ function validateKeyPress(event, regex) {
 }
 
 function validateKeyUp(inputElement, regex) {
-    const inputValue = inputElement.val();
+    const inputValue = inputElement.val().trim();
     const isValidInput = regex.test(inputValue);
 
     if (isValidInput) {
