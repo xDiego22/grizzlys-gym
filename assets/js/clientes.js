@@ -65,9 +65,9 @@ $(function () {
     $("#cedula").keyup(() => validateKeyUp($("#cedula"), /^\d{7,8}$/));
 
     $("#nombre").keypress((event) =>
-        validateKeyPress(event, /^[a-zA-Z\s]{0,50}$/)
+      validateKeyPress(event, /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]{0,50}$/)
     );
-    $("#nombre").keyup(() => validateKeyUp($("#nombre"), /^[a-zA-Z\s]{1,50}$/));
+    $("#nombre").keyup(() => validateKeyUp($("#nombre"), /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]{1,50}$/));
 
     $("#telefono").keypress((event) => validateKeyPress(event, /^\d{0,10}$/));
     $("#telefono").keyup(() => validateKeyUp($("#telefono"), /^0(4\d{9})$/));
