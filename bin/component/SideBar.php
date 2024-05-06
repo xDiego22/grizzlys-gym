@@ -27,6 +27,9 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="?pagina=clientes">Clientes</a>
                     </nav>
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="?pagina=planes">Planes</a>
+                    </nav>
                 </div>
 
 
