@@ -27,6 +27,9 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             $nombre = $_POST['nombre'];
             $telefono = $_POST['telefono'];
             $plan = $_POST['planes'];
+            $monto = $_POST['monto'];
+            $fecha_inicio = $_POST['fecha_inicio'];
+            $fecha_limite = $_POST['fecha_limite'];
             
             echo $obj->registerClient($cedula,$nombre,$telefono,$plan);
             exit;
