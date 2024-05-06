@@ -212,9 +212,16 @@ function actualizarDeuda() {
   const precio = parseFloat($("#precio_plan").val()) || 0;
   const monto = parseFloat($("#monto").val()) || 0;
 
-  const resultado = isNaN(precio) || isNaN(monto) ? "" : precio - monto;
-
-  $("#deuda").val(resultado === "" ? "" : `${resultado}$`);
+    let resultado = "";
+    if (!isNaN(precio) && !isNaN(monto)) {
+        resultado = precio - monto;
+        // Verificar si el resultado tiene decimales
+        if (resultado !== parseInt(resultado)) {
+            // Si tiene decimales, mostrar el resultado con un decimal
+            resultado = resultado.toFixed(1);
+        }
+    }
+    $("#deuda").val(resultado === "" ? "" : `${resultado}$`);
 }
 
 
@@ -324,7 +331,7 @@ function modalEditar(fila) {
 }
 
 function clearForm() {
-  $("input.validar").each((index, input) => {
+  $(".validar").each((index, input) => {
     input.value = "";
     input.classList.remove("is-valid");
     input.classList.remove("is-invalid");
