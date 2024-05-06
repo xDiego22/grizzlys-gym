@@ -35,10 +35,16 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>id_planes</th>
                                         <th>Cedula</th>
                                         <th>Nombre</th>
-                                        <th>Plan</th>
                                         <th>Tlf.</th>
+                                        <th>Plan</th>
+                                        <th>F. Inicial</th>
+                                        <th>F. Limite</th>
+                                        <th>Dias Restantes</th>
+                                        <th>Deuda</th>
+                                        <th>Estado</th>
                                         <th>Opciones</th>
                                     </tr>
                                 </thead>

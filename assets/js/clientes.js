@@ -17,6 +17,100 @@ const Toast = Swal.mixin({
 
 $(function () {
 
+
+    tabla = $("#tableClients").DataTable({
+      responsive: true,
+      pagingType: "simple_numbers",
+      layout: {
+        topStart: {
+          buttons: [
+            {
+              extend: "colvis",
+              columns: ":not(:first-child):not(:last-child)",
+              text: "Filtrar",
+              titleAttr: "filter",
+              className: "bg-gray mb-2",
+            },
+          ],
+          pageLength: {
+            menu: [10, 20, 30],
+          },
+        },
+      },
+      order: [[1, "asc"]],
+      language: {
+        url: "./assets/es-ES.json",
+      },
+      ajax: {
+        url: " ",
+        type: "POST",
+        dataSrc: "data",
+        data: { accion: "getClients" },
+      },
+      columns: [
+        { data: "id" },
+        { data: "id_plan", className: "d-none"},
+        { data: "cedula" },
+        { data: "nombre" },
+        { data: "telefono" },
+        { data: "plan" },
+        { data: "f_inicial" },
+        { data: "f_limite" },
+        { data: "dias_restantes" },
+        { data: "deuda" },
+        { data: "estado" },
+        { targets: -1, defaultContent: "" },
+      ],
+      columnDefs: [
+        {
+          target: 0,
+          className: "text-center",
+        },
+
+        {
+          target: -1,
+          searchable: false,
+          render: function () {
+            return (
+              "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>" +
+              "<button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>"
+            );
+          },
+        },
+        {
+          target: 10,
+          render: function (data) {
+            let estado;
+
+            data === "activo"
+              ? (estado = "text-bg-success")
+              : (estado = "text-bg-danger");
+
+            return `<span class='badge rounded-pill ${estado}'>${data}</span>`;
+          },
+        },
+        {
+          target: 9,
+          render: function (data) {
+            return `${parseFloat(data)}$`;
+          },
+        },
+
+        { responsivePriority: 10, targets: 0 },
+        { responsivePriority: 11, targets: 1 },
+        { responsivePriority: 1, targets: -1 },
+        { responsivePriority: 2, targets: 2 },
+        { responsivePriority: 1, targets: 3 },
+        { responsivePriority: 7, targets: 4 },
+        { responsivePriority: 3, targets: 5 },
+        { responsivePriority: 9, targets: 6 },
+        { responsivePriority: 6, targets: 7 },
+        { responsivePriority: 4, targets: 8 },
+        { responsivePriority: 5, targets: 9 },
+        { responsivePriority: 6, targets: 10 },
+      ],
+    });
+
     $("#monto").keyup(() => {
       actualizarDeuda();
     });
