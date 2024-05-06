@@ -152,8 +152,8 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label for="fecha_inicio" class="form-label">F. Inicio</label>
-                                    <input class="form-control validar" type="date" name="fecha_inicio" id="fecha_inicio">
+                                    <label for="fecha_inicial" class="form-label">F. Inicial</label>
+                                    <input class="form-control validar" type="date" name="fecha_inicial" id="fecha_inicial">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fecha_limite" class="form-label">F. Limite</label>
