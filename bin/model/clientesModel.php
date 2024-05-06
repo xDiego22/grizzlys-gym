@@ -8,7 +8,57 @@ use PDO;
 use PDOException;
 class clientesModel extends connectDB{
     public function getClients() {
+        try {
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            $sql = "SELECT clientes.id as id,
+                    clientes.cedula as cedula,
+                    clientes.nombre AS nombre_cliente,
+                    clientes.telefono as telefono, 
+                    planes.id as id_plan,
+                    planes.nombre as nombre_plan,
+                    CASE WHEN MAX(pagos.fecha_limite) > CURDATE() THEN 'activo' ELSE 'vencido' END AS estado,
+                    MAX(pagos.fecha_inicial) as f_inicial, 
+                    MAX(pagos.fecha_limite) as f_limite, 
+                    TIMESTAMPDIFF(DAY,CURDATE(),MAX(pagos.fecha_limite)) as dias_restantes ,
+                    (SELECT SUM(deuda) FROM pagos WHERE pagos.id_clientes = clientes.id) as deuda FROM clientes INNER JOIN pagos ON clientes.id = pagos.id_clientes INNER JOIN planes ON clientes.id_planes = planes.id GROUP BY clientes.id;";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute();
+
+            $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $data = array();
+
+            foreach ($clients as $client) {
+
+                $subarray = array();
+                $subarray['id'] = $client['id'];
+                $subarray['cedula'] = $client['cedula'];
+                $subarray['nombre'] = $client['nombre_cliente'];
+                $subarray['telefono'] = $client['telefono'];
+                $subarray['id_plan'] = $client['id_plan'];
+                $subarray['plan'] = $client['nombre_plan'];
+                $subarray['estado'] = $client['estado'];
+                $subarray['f_inicial'] = $client['f_inicial'];
+                $subarray['f_limite'] = $client['f_limite'];
+                $subarray['dias_restantes'] = $client['dias_restantes'];
+                $subarray['deuda'] = $client['deuda'];
+
+                $data[] = $subarray;
+            }
+
+            $json = array(
+                "data" => $data
+            );
+
+            return json_encode($json);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            return $e->getMessage();
+        }
     }
 
     private function plansInfo($id)
@@ -76,12 +126,13 @@ class clientesModel extends connectDB{
                 return "Plan no existe";
             }
 
-
             $bd = $this->conexion();
             $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            // Comenzar la transacción
+            $bd->beginTransaction();
             
-            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_planes,fecha_inscripcion, estado) VALUES (?, ?, ?, ?, CURRENT_DATE,'activo')";
+            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_planes,fecha_inscripcion) VALUES (?, ?, ?, ?, CURRENT_DATE)";
 
             $stmt = $bd->prepare($sql);
 
@@ -95,6 +146,7 @@ class clientesModel extends connectDB{
             // <---  pago  ---->
 
             $id_cliente = $bd->lastInsertId();
+
             $deuda = ($precio_plan['valor']) - ($monto);
 
             $sql = "INSERT INTO pagos (id_clientes, id_planes, fecha_inicial,fecha_limite,monto,deuda) VALUES (?, ?, ?, ?, ?, ?)";
@@ -110,11 +162,14 @@ class clientesModel extends connectDB{
                 $deuda,
             ));
 
-
+            // Confirmar la transacción
+            $bd->commit();
             http_response_code(200);
             return 'Registro exitoso';
 
         } catch (PDOException $e) {
+            // Revertir la transacción en caso de error
+            $bd->rollBack();
             http_response_code(500);
             return $e->getMessage();
         }
