@@ -28,10 +28,10 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             $telefono = $_POST['telefono'];
             $plan = $_POST['planes'];
             $monto = $_POST['monto'];
-            $fecha_inicio = $_POST['fecha_inicio'];
+            $fecha_inicial = $_POST['fecha_inicial'];
             $fecha_limite = $_POST['fecha_limite'];
             
-            echo $obj->registerClient($cedula,$nombre,$telefono,$plan);
+            echo $obj->registerClient($cedula,$nombre,$telefono,$plan,$monto,$fecha_inicial,$fecha_limite);
             exit;
         }
         if ($accion === 'valor_plan') {
