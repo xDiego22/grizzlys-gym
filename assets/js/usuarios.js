@@ -59,10 +59,19 @@ $(() => {
         { data: "nombre" },
         { data: "correo" },
         { data: "telefono" },
-        { data: "opciones", defaultContent: "" },
+        { targets: -1, defaultContent: "" },
       ],
       columnDefs: [
-        { target: -1, searchable: false },
+        {
+          target: -1,
+          searchable: false,
+          render: function (data, type, row, meta) {
+            return (
+              "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>" +
+              "<button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>"
+            );
+          },
+        },
         { responsivePriority: 1, targets: 1 },
         { responsivePriority: 1, targets: -1 },
         { responsivePriority: 2, targets: 0 },

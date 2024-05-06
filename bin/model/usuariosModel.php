@@ -17,10 +17,6 @@ class usuariosModel extends connectDB{
             $users = $this->usersInfo();
             $data = array();
 
-
-            $opciones = "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' cedula='boton_modificar'><i class='bi bi-pencil-fill'></i></button><button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>";
-
-
             foreach ($users as $user) {
 
                 $subarray = array();
@@ -28,7 +24,6 @@ class usuariosModel extends connectDB{
                 $subarray['nombre'] = $user['nombre'];
                 $subarray['correo'] = $user['correo'];
                 $subarray['telefono'] = $user['telefono'];
-                $subarray['opciones'] = $opciones;
 
                 $data[] = $subarray;
             }
