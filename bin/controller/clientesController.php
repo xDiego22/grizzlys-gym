@@ -34,11 +34,29 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->registerClient($cedula,$nombre,$telefono,$plan,$monto,$fecha_inicial,$fecha_limite);
             exit;
         }
+        if ($accion === 'editar') {
+            
+            $id = $_POST['id'];
+            $cedula = $_POST['cedula'];
+            $nombre = $_POST['nombre'];
+            $telefono = $_POST['telefono'];
+            $plan = $_POST['planes'];
+            
+            echo $obj->updateClient($id,$cedula,$nombre,$telefono,$plan);
+            exit;
+        }
         if ($accion === 'valor_plan') {
             
             $plan = $_POST['planes'];
             
             echo $obj->valorPlan($plan);
+            exit;
+        }
+        if ($accion === 'eliminar') {
+            
+            $id = $_POST['id'];
+            
+            echo $obj->deleteClient($id);
             exit;
         }
         exit;

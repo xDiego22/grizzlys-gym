@@ -6,6 +6,7 @@ use config\connect\connectDB as connectDB;
 
 use PDO;
 use PDOException;
+use Exception;
 class clientesModel extends connectDB{
     public function getClients() {
         try {
@@ -22,7 +23,7 @@ class clientesModel extends connectDB{
                     MAX(pagos.fecha_inicial) as f_inicial, 
                     MAX(pagos.fecha_limite) as f_limite, 
                     TIMESTAMPDIFF(DAY,CURDATE(),MAX(pagos.fecha_limite)) as dias_restantes ,
-                    (SELECT SUM(deuda) FROM pagos WHERE pagos.id_clientes = clientes.id) as deuda FROM clientes INNER JOIN pagos ON clientes.id = pagos.id_clientes INNER JOIN planes ON clientes.id_planes = planes.id GROUP BY clientes.id;";
+                    clientes.saldo as saldo FROM clientes INNER JOIN pagos ON clientes.id = pagos.id_clientes INNER JOIN planes ON clientes.id_planes = planes.id GROUP BY clientes.id;";
 
             $stmt = $bd->prepare($sql);
 
@@ -45,7 +46,7 @@ class clientesModel extends connectDB{
                 $subarray['f_inicial'] = $client['f_inicial'];
                 $subarray['f_limite'] = $client['f_limite'];
                 $subarray['dias_restantes'] = $client['dias_restantes'];
-                $subarray['deuda'] = $client['deuda'];
+                $subarray['saldo'] = $client['saldo'];
 
                 $data[] = $subarray;
             }
@@ -132,7 +133,9 @@ class clientesModel extends connectDB{
             // Comenzar la transacción
             $bd->beginTransaction();
             
-            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_planes,fecha_inscripcion) VALUES (?, ?, ?, ?, CURRENT_DATE)";
+            $sql = "INSERT INTO clientes (cedula, nombre, telefono,id_planes,fecha_inscripcion,saldo) VALUES (?, ?, ?, ?, CURRENT_DATE, ?)";
+
+            $saldo = ($monto) - ($precio_plan['valor']) ;
 
             $stmt = $bd->prepare($sql);
 
@@ -141,15 +144,14 @@ class clientesModel extends connectDB{
                 $nombre,
                 $telefono,
                 $plan,
+                $saldo,
             ));
 
             // <---  pago  ---->
 
             $id_cliente = $bd->lastInsertId();
 
-            $deuda = ($precio_plan['valor']) - ($monto);
-
-            $sql = "INSERT INTO pagos (id_clientes, id_planes, fecha_inicial,fecha_limite,monto,deuda) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO pagos (id_clientes, id_planes, fecha_inicial,fecha_limite,monto) VALUES (?, ?, ?, ?, ?)";
 
             $stmt = $bd->prepare($sql);
 
@@ -159,13 +161,123 @@ class clientesModel extends connectDB{
                 $fecha_inicio,
                 $fecha_limite,
                 $monto,
-                $deuda,
             ));
 
             // Confirmar la transacción
             $bd->commit();
             http_response_code(200);
             return 'Registro exitoso';
+
+        } catch (PDOException $e) {
+            // Revertir la transacción en caso de error
+            $bd->rollBack();
+            http_response_code(500);
+            return $e->getMessage();
+        }
+    }
+    public function updateClient($id,$cedula, $nombre, $telefono, $plan){
+        try {
+
+            if (
+                !$this->valString('/^[0-9]{1,50}$/', $id) ||
+                !$this->valString('/^[0-9]{7,10}$/', $cedula) ||
+                !$this->valString('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,50}$/', $nombre) ||
+                !$this->valString('/^0(4\d{9})$/', $telefono) ||
+                !$this->valString('/^[0-9]{1,10}$/', $plan)
+            ) {
+
+                http_response_code(400);
+                return 'Carácteres inválidos';
+            }
+
+            if (!$this->existUser($cedula)) {
+                http_response_code(400);
+                return "Usuario no existe";
+            }
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Comenzar la transacción
+            $bd->beginTransaction();
+
+            // Obtener el precio del plan actual del cliente antes de modificar
+            $sql = "SELECT valor FROM planes WHERE id = (SELECT id_planes FROM clientes WHERE cedula = :cedula);";
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(":cedula" => $cedula));
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$resultado) {
+                http_response_code(400);
+                throw new Exception("No se encontró el plan actual del cliente.");
+            }
+
+            $valorActual = $resultado['valor'];
+
+            // Obtener el precio del nuevo plan
+            $sql = "SELECT valor FROM planes WHERE id = :plan";
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(":plan" => $plan));
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$resultado) {
+                http_response_code(400);
+                throw new Exception("No se encontró el nuevo plan.");
+            }
+
+            $valorNuevo = $resultado['valor'];
+
+            // Actualizar el cliente con el nuevo plan y el saldo ajustado
+            $sql = "UPDATE clientes 
+            SET cedula = :cedula, nombre = :nombre, telefono = :telefono, id_planes = :plan, saldo = saldo + (:valorActual - :valorNuevo) 
+            WHERE id = :id";
+
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(
+                ":id"       => $id,
+                ":cedula"   => $cedula,
+                ":nombre"   => $nombre,
+                ":telefono" => $telefono,
+                ":plan"     => $plan,
+                ":valorActual" => $valorActual,
+                ":valorNuevo"  => $valorNuevo,
+            ));
+
+            // Confirmar la transacción
+            $bd->commit();
+            http_response_code(200);
+            return 'Modificacion exitosa';
+
+        } catch (PDOException $e) {
+            // Revertir la transacción en caso de error
+            $bd->rollBack();
+            http_response_code(500);
+            return $e->getMessage();
+        }
+    }
+    public function deleteClient($id){
+        try {
+
+            
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Comenzar la transacción
+            $bd->beginTransaction();
+            
+            $sql = "DELETE FROM clientes where id = ?";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute(array(
+                $id
+            ));
+
+
+            // Confirmar la transacción
+            $bd->commit();
+            http_response_code(200);
+            return 'eliminado';
 
         } catch (PDOException $e) {
             // Revertir la transacción en caso de error
