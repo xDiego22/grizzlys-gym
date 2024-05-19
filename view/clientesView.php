@@ -19,39 +19,41 @@
 
                     <div class="card shadow-sm rounded mt-3">
                         <div class="card-body">
-                            <h2 class="card-title mt-2 mb-4">Gestion de Clientes</h2>
+                            <h2 class="card-title mt-2 mb-4">Gestión de Clientes</h2>
 
-                            <div class="row ">
+                            <div class="row">
                                 <div class="col-md-auto">
-
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalGestion" id='btn_registrar'>
                                         Registrar
                                     </button>
-
                                 </div>
                             </div>
 
-                            <table id="tableClients" class="table table-hover table-striped mt-3" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>id_planes</th>
-                                        <th>Cedula</th>
-                                        <th>Nombre</th>
-                                        <th>Tlf.</th>
-                                        <th>Plan</th>
-                                        <th>F. Inicial</th>
-                                        <th>F. Limite</th>
-                                        <th>Dias Restantes</th>
-                                        <th>Deuda</th>
-                                        <th>Estado</th>
-                                        <th>Opciones</th>
-                                    </tr>
-                                </thead>
+                            <div class="table-responsive">
+                                <table id="tableClients" class="table table-hover table-striped mt-3" style="width: 100%;" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="d-none">id_planes</th>
+                                            <th>Cedula</th>
+                                            <th>Nombre</th>
+                                            <th>Tlf.</th>
+                                            <th>Plan</th>
+                                            <th>F. Inicial</th>
+                                            <th>F. Limite</th>
+                                            <th>Dias Restantes</th>
+                                            <th>Saldo</th>
+                                            <th>Estado</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Aquí van las filas de la tabla -->
+                                </table>
+                            </div>
 
-                            </table>
                         </div>
                     </div>
+
                 </div>
 
             </main>
@@ -136,11 +138,11 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" id="fila_monto">
                                 <div class="col-8">
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control validar" type="number" min="0.0" max="200.0" name="monto" id="monto" placeholder="" >
+                                        <input class="form-control validar" type="number" min="0.0" max="200.0" name="monto" id="monto" placeholder="">
                                         <label for="monto" class="form-label">Monto a pagar</label>
                                         <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
@@ -148,15 +150,15 @@
                                 <div class="col-4">
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control" disabled type="text" id="deuda" placeholder="">
-                                        <label for="deuda" class="form-label">Deuda</label>
+                                        <input class="form-control" disabled type="text" id="saldo" placeholder="">
+                                        <label for="saldo" class="form-label">Saldo</label>
 
                                     </div>
                                 </div>
 
                             </div>
 
-                            <div class="row">
+                            <div class="row" id="fila_fecha">
                                 <div class="col-md-6">
                                     <label for="fecha_inicial" class="form-label">F. Inicial</label>
                                     <input class="form-control validar" type="date" name="fecha_inicial" id="fecha_inicial">
@@ -173,7 +175,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" id='registrar' class="btn btn-success">Guardar</button>
-                        <button type="submit" id='editar' class="btn btn-success">Editar</button>
+                        <button type="submit" id='editar' class="btn btn-primary">Editar</button>
                     </div>
                 </form>
             </div>
