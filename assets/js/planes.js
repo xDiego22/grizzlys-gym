@@ -54,9 +54,7 @@ $(function () {
          { targets: -1, defaultContent: "" },
        ],
          columnDefs: [
-            {
-                target: 0,className: "text-center",   
-            },
+            
          {
            target: -1,
            searchable: false,
