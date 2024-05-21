@@ -197,6 +197,11 @@ $(function () {
     modalRegistrar();
   });
 
+  $("#montoPay").keyup(() => {
+    actualizarSaldoPay();
+    validateKeyUp($("#montoPay"), /^\d+(\.\d)?$/);
+  });
+
   //fin validaciones
 
   $("#formManageUser").submit(function (event) {
@@ -244,6 +249,66 @@ $(function () {
       });
     }
   });
+  
+
+  $("#formUserPay").submit(function (e) { 
+    e.preventDefault();
+
+    allFieldsValidated = true;
+
+    if (!$("#montoPay").hasClass("is-valid")) {
+      $("#montoPay").addClass("is-invalid");
+      allFieldsValidated = false;
+      return;
+    }
+
+    if (!allFieldsValidated) {
+      Toast.fire({
+        icon: "error",
+        title: "Campos inválidos",
+      });
+    }
+
+    const data = new FormData();
+    
+    data.append("accion", "client_pay");
+    data.append("id", id);
+    data.append("monto", $("#montoPay").val());
+
+    $.ajax({
+      async: true,
+      url: " ",
+      type: "POST",
+      contentType: false,
+      data: data,
+      processData: false,
+      cache: false,
+      beforeSend: function () {
+        disableFormPay();
+      },
+      success: function (response) {
+        tabla.ajax.reload(null, false);
+
+        Toast.fire({
+          icon: "success",
+          title: `${response}`,
+        });
+
+        $("#modalPay").modal("hide");
+        clearFormPay();
+      },
+      error: function ({ responseText }, status, error) {
+        Toast.fire({
+          icon: "error",
+          title: `${responseText}`,
+        });
+      },
+      complete: function () {
+        enableFormPay();
+      },
+    });
+
+  });
 
   //funciones
 
@@ -272,6 +337,25 @@ $(function () {
     });
   }
 
+  function disableFormPay() {
+   
+    $("#pagar").addClass("disabled");
+
+    const loadingSpinner = `<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>`;
+
+    $("#pagar").html(loadingSpinner);
+
+    $("#montoPay").attr("disabled", true);
+  }
+  function enableFormPay() {
+  
+    $("#pagar").removeClass("disabled");
+
+    $("#pagar").html("Pagar$");
+
+    $("#montoPay").attr("disabled", false);
+  }
+  
   function sendAjax(data) {
     $.ajax({
       async: true,
@@ -398,8 +482,11 @@ function eliminar(fila) {
   }).then((result) => {
       if (result.isConfirmed) {
         
-        const linea = tabla.row(fila).index();
-        const id = tabla.cell(linea, 0).data();
+        let idFila = $(fila).closest("tr").data("id");
+
+        let indiceFila = tabla.row('[data-id="' + idFila + '"]').index();
+
+        id = tabla.cell(indiceFila, 0).data();
 
         const datos = new FormData();
         datos.append("accion", "eliminar");
@@ -418,7 +505,7 @@ function eliminar(fila) {
               icon: "success",
               title: `¡${respuesta}!`,
             });
-            tabla.row(linea).remove().draw(false);
+            tabla.row(indiceFila).remove().draw(false);
           },
           error: function ({ status, responseText }) {
             
@@ -440,6 +527,7 @@ function eliminar(fila) {
 function modalPay(fila) {
   id = null;
 
+  clearFormPay();
   // Obtener el ID único de la fila seleccionada
   let idFila = $(fila).closest("tr").data("id");
 
@@ -450,7 +538,7 @@ function modalPay(fila) {
 
   const data = new FormData();
 
-  data.append("accion", "client_pay");
+  data.append("accion", "info_client_pay");
   data.append("id", id);
 
    $.ajax({
@@ -462,13 +550,17 @@ function modalPay(fila) {
      processData: false,
      cache: false,
      success: function (response) {
-       const { cedula,nombre,plan,precio,saldo } = JSON.parse(response);
+       let { cedula, nombre, plan, valor, saldo } = JSON.parse(response);
+       
+       valor = (!isNaN(valor) ? parseFloat(valor) : null);
+
+       saldo = (!isNaN(saldo) ? parseFloat(saldo) : null);
 
        $("#cedulaPay").val(cedula);
        $("#nombrePay").val(nombre);
        $("#planPay").val(plan);
-       $("#precioPay").val(precio);
-       $("#saldoPay").val(saldo);
+       $("#precioPay").val(valor + "$");
+       $("#saldoPay").val(saldo + "$");
      },
      error: function ({ responseText }, status, error) {
        Toast.fire({
@@ -547,4 +639,31 @@ function clearForm() {
   });
   $("#precio_plan").val("");
   $("#saldo").val("");
+}
+
+
+function actualizarSaldoPay() {
+  const saldo = parseFloat($("#saldoPay").val()) || 0;
+  const monto = parseFloat($("#montoPay").val()) || 0;
+
+  let resultado = NaN;
+  if (!isNaN(saldo) && !isNaN(monto)) {
+    resultado = (saldo) + (monto);
+    // Verificar si el resultado tiene decimales
+    if (resultado !== parseInt(resultado)) {
+      // Si tiene decimales, mostrar el resultado con un decimal
+      resultado = resultado.toFixed(1);
+    }
+  }
+ 
+  $("#saldoNewPay").val(resultado === "" ? "" : `${resultado}$`);
+}
+
+function clearFormPay() {
+  $("#cedulaPay").val("");
+  $("#nombrePay").val("");
+  $("#planPay").val("");
+  $("#precioPay").val("");
+  $("#saldoPay").val("");
+  $("#montoPay").val("");
 }
