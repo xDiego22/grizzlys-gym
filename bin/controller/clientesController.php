@@ -52,6 +52,13 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->valorPlan($plan);
             exit;
         }
+        if ($accion === 'client_pay') {
+            
+            $id = $_POST['id'];
+            
+            echo $obj->infoClientPay($id);
+            exit;
+        }
         if ($accion === 'eliminar') {
             
             $id = $_POST['id'];
