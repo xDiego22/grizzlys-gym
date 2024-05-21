@@ -58,16 +58,36 @@ $(function () {
       { data: "dias_restantes" },
       { data: "saldo" },
       { data: "estado" },
-      { targets: -1, defaultContent: "" },
+      { datat: null, defaultContent: "" },
     ],
     columnDefs: [
       {
         target: -1,
         searchable: false,
-        render: function () {
+        render: function (data, type, row, meta) {
+
+          let saldo = row.saldo;
+
+          saldo = !isNaN(saldo) ? parseFloat(saldo) : null;
+
+          let btn_pagar = "";
+          if (saldo < 0) {
+            btn_pagar = "<button type='button' class='btn btn-success me-1' data-bs-toggle='modal' data-bs-target='#modalPay' onclick='modalPay(this)'><i class='bi bi-currency-dollar'></i></button>";
+          }
+
+          const btn_renew = "<button type='button' class='btn btn-warning me-1' data-bs-toggle='modal' data-bs-target='#modalRenew' onclick='renew(this)'><i class='bi bi-calendar-plus-fill text-white'></i></button>";
+
+          const btn_edit = "<button type='button' class='btn btn-primary me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>";
+
+          const btn_delete = "<button type='button' class='btn btn-danger ' onclick='eliminar(this)'><i class='bi bi-trash-fill'></i></button>";
+
           return (
-            "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>" +
-            "<button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>"
+            "<div class='btn-group' role='group' aria-label='optiones buttons'>" +
+              btn_pagar +
+              btn_renew +
+              btn_edit +
+              btn_delete +
+            "</div>"
           );
         },
       },
@@ -134,7 +154,6 @@ $(function () {
     },
   });
 
-  
 
   $("#monto").keyup(() => {
     actualizarSaldo();
@@ -416,6 +435,48 @@ function eliminar(fila) {
         });
     }
   });
+}
+
+function modalPay(fila) {
+  id = null;
+
+  // Obtener el ID único de la fila seleccionada
+  let idFila = $(fila).closest("tr").data("id");
+
+  // Buscar el índice de la fila correspondiente al ID único
+  let indiceFila = tabla.row('[data-id="' + idFila + '"]').index();
+
+  id = tabla.cell(indiceFila, 0).data();
+
+  const data = new FormData();
+
+  data.append("accion", "client_pay");
+  data.append("id", id);
+
+   $.ajax({
+     async: true,
+     url: " ",
+     type: "POST",
+     contentType: false,
+     data: data,
+     processData: false,
+     cache: false,
+     success: function (response) {
+       const { cedula,nombre,plan,precio,saldo } = JSON.parse(response);
+
+       $("#cedulaPay").val(cedula);
+       $("#nombrePay").val(nombre);
+       $("#planPay").val(plan);
+       $("#precioPay").val(precio);
+       $("#saldoPay").val(saldo);
+     },
+     error: function ({ responseText }, status, error) {
+       Toast.fire({
+         icon: "error",
+         title: `${responseText}`,
+       });
+     },
+   });
 }
 
 function modalRegistrar() {

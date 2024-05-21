@@ -39,9 +39,9 @@
                                             <th>Nombre</th>
                                             <th>Tlf.</th>
                                             <th>Plan</th>
-                                            <th>F. Inicial</th>
-                                            <th>F. Limite</th>
-                                            <th>Dias Restantes</th>
+                                            <th>Desde</th>
+                                            <th>Hasta</th>
+                                            <th>Dias Rest.</th>
                                             <th>Saldo</th>
                                             <th>Estado</th>
                                             <th>Opciones</th>
@@ -176,6 +176,88 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" id='registrar' class="btn btn-success">Guardar</button>
                         <button type="submit" id='editar' class="btn btn-primary">Editar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal pagar -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalPay" tabindex="-1" aria-labelledby="modalPayLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalPayLabel">Pagar Deuda</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="POST" id="formUserPay">
+                    <div class="modal-body">
+
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+
+                                        <input class="form-control" name="cedulaPay" id="cedulaPay" placeholder="" readonly disabled>
+                                        <label for="cedulaPay" class="form-label">Cedula</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+
+                                        <input class="form-control" name="nombrePay" id="nombrePay" placeholder="" readonly disabled>
+                                        <label for="nombrePay" class="form-label">Nombre</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="planPay" id="planPay" placeholder=""  readonly disabled>
+                                        <label for="planPay" class="form-label">Plan</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="precioPay" id="precioPay" placeholder=""  readonly disabled>
+                                        <label for="precioPay" class="form-label">Precio</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="saldoPay" id="saldoPay" placeholder="" readonly disabled>
+                                        <label for="saldoPay" class="form-label">Saldo Antes</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="saldoNewPay" id="saldoNewPay" placeholder="" disabled>
+                                        <label for="saldoNewPay" class="form-label">Saldo Nuevo</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="montoPay" id="montoPay" placeholder="">
+                                        <label for="montoPay" class="form-label">Monto a pagar</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" id='pagar' class="btn btn-success">Pagar $</button>
                     </div>
                 </form>
             </div>
