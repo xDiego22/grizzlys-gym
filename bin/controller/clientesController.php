@@ -21,6 +21,7 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->getClients();
             exit;
         }
+        
         if ($accion === 'registrar') {
             
             $cedula = $_POST['cedula'];
@@ -34,6 +35,7 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->registerClient($cedula,$nombre,$telefono,$plan,$monto,$fecha_inicial,$fecha_limite);
             exit;
         }
+
         if ($accion === 'editar') {
             
             $id = $_POST['id'];
@@ -45,6 +47,7 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->updateClient($id,$cedula,$nombre,$telefono,$plan);
             exit;
         }
+
         if ($accion === 'valor_plan') {
             
             $plan = $_POST['planes'];
@@ -52,13 +55,24 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->valorPlan($plan);
             exit;
         }
+
         if ($accion === 'client_pay') {
+            
+            $id = $_POST['id'];
+            $monto = $_POST['monto'];
+            
+            echo $obj->clientPay($id,$monto);
+            exit;
+        }
+
+        if ($accion === 'info_client_pay') {
             
             $id = $_POST['id'];
             
             echo $obj->infoClientPay($id);
             exit;
         }
+
         if ($accion === 'eliminar') {
             
             $id = $_POST['id'];
