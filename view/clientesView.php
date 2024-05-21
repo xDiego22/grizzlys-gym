@@ -216,13 +216,13 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" name="planPay" id="planPay" placeholder=""  readonly disabled>
+                                        <input class="form-control" name="planPay" id="planPay" placeholder="" readonly disabled>
                                         <label for="planPay" class="form-label">Plan</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" name="precioPay" id="precioPay" placeholder=""  readonly disabled>
+                                        <input class="form-control" name="precioPay" id="precioPay" placeholder="" readonly disabled>
                                         <label for="precioPay" class="form-label">Precio</label>
                                     </div>
                                 </div>
@@ -247,8 +247,9 @@
 
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" name="montoPay" id="montoPay" placeholder="">
+                                        <input class="form-control" name="montoPay" id="montoPay" type="number" min="0.0" max="200.0" placeholder="">
                                         <label for="montoPay" class="form-label">Monto a pagar</label>
+                                        <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
                                 </div>
                             </div>
