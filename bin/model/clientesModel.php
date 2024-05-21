@@ -344,6 +344,47 @@ class clientesModel extends connectDB{
         }
     }
 
+    public function infoClientPay ($id) {
+        try {
+
+            if ( !$this->valString('/^[0-9]{1,50}$/', $id)) {
+                http_response_code(400);
+                return 'Carácteres inválidos';
+            }
+
+            if (!$this->existIdUser($id)) {
+                http_response_code(400);
+                return "Usuario no existe";
+            }
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "SELECT c.cedula AS 'cedula', c.nombre AS 'nombre', p.nombre AS 'plan', p.valor AS 'valor', c.saldo AS 'saldo' FROM clientes c INNER JOIN planes p ON p.id = c.id_planes WHERE c.id = ?;";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute(array(
+                $id
+            ));
+
+            $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$fila) {
+                http_response_code(400);
+                return NULL;
+            } 
+
+            http_response_code(200);
+
+            return json_encode($fila);
+            
+        } catch (PDOException $e) {
+            http_response_code(500);
+            return $e->getMessage();
+        }
+    }
+
     private function existUser($cedula)
     {
         try {
@@ -373,6 +414,34 @@ class clientesModel extends connectDB{
         }
     }
 
+    private function existIdUser($id)
+    {
+        try {
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "SELECT cedula FROM clientes
+            WHERE id = ? ";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute(array($id));
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resultado) {
+                http_response_code(200);
+                return true;
+            } else {
+                http_response_code(500);
+                return false;
+            }
+        } catch (PDOException $e) {
+            http_response_code(500);
+            return 'ERROR: ' . $e->getMessage();
+        }
+    }
     private function valString($pattern, $value)
     {
         $value = trim($value);
