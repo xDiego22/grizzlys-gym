@@ -20,30 +20,6 @@ $(() => {
     tabla = $("#tableUsers").DataTable({
       responsive: true,
       pagingType: "simple_numbers",
-      layout: {
-        topStart: {
-          buttons: [
-            {
-              extend: "colvis",
-              columns: ":not(:last-child)",
-              text: "Filtrar",
-              className: "bg-primary",
-            },
-            {
-              extend: "pdf",
-              columns: ":not(:last-child)",
-              text: "PDF",
-              className: "bg-danger",
-            },
-            {
-              extend: "excel",
-              columns: ":not(:last-child)",
-              text: "Excel",
-              className: "bg-success",
-            },
-          ],
-        },
-      },
       order: [[1, "asc"]],
       language: {
         url: "./assets/es-ES.json",
@@ -66,9 +42,16 @@ $(() => {
           target: -1,
           searchable: false,
           render: function (data, type, row, meta) {
+
+            const btn_edit = "<button type='button' class='btn btn-primary me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>";
+
+            const btn_delete =
+              "<button type='button' class='btn btn-danger ' onclick='eliminar(this)'><i class='bi bi-trash-fill'></i></button>";
             return (
-              "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>" +
-              "<button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>"
+              "<div class='btn-group' role='group' aria-label='optiones buttons'>" +
+              btn_edit +
+              btn_delete +
+              "</div>"
             );
           },
         },

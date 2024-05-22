@@ -20,22 +20,6 @@ $(function () {
      tabla = $("#tablePlans").DataTable({
        responsive: true,
        pagingType: "simple_numbers",
-       layout: {
-         topStart: {
-           buttons: [
-             {
-               extend: "colvis",
-               columns: ":not(:first-child):not(:last-child)",
-               text: "Filtrar",
-               titleAttr: "filter",
-               className: "bg-gray mb-2",
-             },
-           ],
-           pageLength: {
-             menu: [10, 20, 30],
-           },
-         },
-       },
        order: [[1, "asc"]],
        language: {
          url: "./assets/es-ES.json",
@@ -59,9 +43,16 @@ $(function () {
            target: -1,
            searchable: false,
            render: function () {
+             const btn_edit =
+               "<button type='button' class='btn btn-primary me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>";
+
+             const btn_delete =
+               "<button type='button' class='btn btn-danger ' onclick='eliminar(this)'><i class='bi bi-trash-fill'></i></button>";
              return (
-               "<button type='button' class='btn btn-primary mb-1 me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>" +
-               "<button type='button' class='btn btn-danger mb-1 ' onclick='eliminar(this)'><i class='bi bi-x-lg'></i></button>"
+               "<div class='btn-group' role='group' aria-label='optiones buttons'>" +
+               btn_edit +
+               btn_delete +
+               "</div>"
              );
            },
          },

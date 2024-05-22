@@ -19,13 +19,16 @@
 
                     <div class="card shadow-sm rounded mt-3">
                         <div class="card-body">
-                            <h2 class="card-title mt-2 mb-4">Gestión de Clientes</h2>
+                            <div class="row mt-2 mb-2">
+                                <div class="col-auto me-auto mb-2">
+                                    <h2 class="card-title">Gestión de Clientes</h2>
+                                </div>
+                                <div class="col-auto">
 
-                            <div class="row">
-                                <div class="col-md-auto">
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalGestion" id='btn_registrar'>
                                         Registrar
                                     </button>
+
                                 </div>
                             </div>
 

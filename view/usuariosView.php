@@ -19,12 +19,14 @@
 
                     <div class="card shadow-sm rounded mt-3">
                         <div class="card-body">
-                            <h2 class="card-title mt-2 mb-4">Gestion de usuarios</h2>
+                            
+                            <div class="row mt-2 mb-4">
+                                <div class="col-auto me-auto mb-2">
+                                    <h2 class="card-title">Gestión de usuarios</h2>
+                                </div>
+                                <div class="col-auto">
 
-                            <div class="row ">
-                                <div class="col-md-auto">
-
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalGestion" id = 'btn_registrar'>
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalGestion" id='btn_registrar'>
                                         Registrar
                                     </button>
 
@@ -135,7 +137,7 @@
                         </div>
 
                     </div>
-                    <div class="modal-footer" >
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" id='registrar' class="btn btn-success">Guardar</button>
                         <button type="submit" id='editar' class="btn btn-success">Editar</button>
