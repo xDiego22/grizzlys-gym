@@ -30,6 +30,9 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="?pagina=planes">Planes</a>
                     </nav>
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="?pagina=pagos">Pagos</a>
+                    </nav>
                 </div>
 
 
