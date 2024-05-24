@@ -57,11 +57,12 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
         }
 
         if ($accion === 'client_pay') {
-            
+
             $id = $_POST['id'];
+            $usuario_sesion = $_SESSION['cedula'];
             $monto = $_POST['monto'];
-            
-            echo $obj->clientPay($id,$monto);
+
+            echo $obj->clientPay($id, $monto, $usuario_sesion);
             exit;
         }
 

@@ -163,13 +163,12 @@ class clientesModel extends connectDB{
 
             // <---  pago  ---->
 
-            $sql = "INSERT INTO pagos (id_clientes, id_planes, monto,fecha_pago) VALUES (?, ?, ?, CURDATE())";
+            $sql = "INSERT INTO pagos (id_clientes, monto,fecha_pago) VALUES (?, ?, CURDATE())";
 
             $stmt = $bd->prepare($sql);
 
             $stmt->execute(array(
                 $id_cliente,
-                $plan,
                 $monto,
             ));
 
@@ -394,13 +393,15 @@ class clientesModel extends connectDB{
             return $e->getMessage();
         }
     }
-    public function clientPay ($id,$monto) {
+    public function clientPay($id, $monto, $usuario_sesion)
+    {
         try {
 
-            if ( 
-                    !$this->valString('/^[0-9]{1,50}$/', $id) ||
-                    !$this->valString('/^\d+(\.\d)?$/', $monto)
-                ) {
+            if (
+                !$this->valString('/^[0-9]{1,50}$/', $id) ||
+                !$this->valString('/^\d+(\.\d)?$/', $monto) ||
+                !$this->valString('/^[0-9]{7,10}$/', $usuario_sesion)
+            ) {
                 http_response_code(400);
                 return 'Carácteres inválidos';
             }
@@ -415,29 +416,16 @@ class clientesModel extends connectDB{
 
             $bd->beginTransaction();
 
-            // Obtener el id del plan del cliente
-            $sql = "SELECT id_planes FROM clientes WHERE id = :id";
-            $stmt = $bd->prepare($sql);
-            $stmt->execute(array(":id" => $id));
-            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$resultado) {
-                http_response_code(400);
-                throw new Exception("No se encontró el id del plan.");
-            }
-
-            $id_plan = $resultado['id_planes'];
-
             //registro del pago
 
-            $sql = "INSERT INTO pagos (id_clientes, id_planes, fecha_pago, monto) 
-            VALUES (:id, :id_plan, CURDATE(), :monto)";
+            $sql = "INSERT INTO pagos (id_usuarios,id_clientes, fecha_pago, monto) 
+            VALUES (:id_usuarios,:id, CURDATE(), :monto)";
 
             $stmt = $bd->prepare($sql);
             $stmt->execute(array(
-                ":id"       => $id,
-                ":id_plan"  => $id_plan,
-                ":monto"    => $monto,
+                ":id"           => $id,
+                ":id_usuarios"  => $usuario_sesion,
+                ":monto"        => $monto,
             ));
 
             //actualizacion de saldo
@@ -454,7 +442,6 @@ class clientesModel extends connectDB{
             $bd->commit();
             http_response_code(200);
             return 'Pago exitoso';
-            
         } catch (PDOException $e) {
             // Revertir la transacción en caso de error
             $bd->rollBack();
