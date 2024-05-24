@@ -58,7 +58,7 @@ $(function () {
       { data: "dias_restantes" },
       { data: "saldo" },
       { data: "estado" },
-      { datat: null, defaultContent: "" },
+      { data: null, defaultContent: "" },
     ],
     columnDefs: [
       {
