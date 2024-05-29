@@ -19,9 +19,9 @@ class clientesModel extends connectDB{
                     clientes.telefono as telefono, 
                     planes.id as id_plan,
                     planes.nombre as nombre_plan,
-                    CASE WHEN MAX(membresias.fecha_limite) > CURDATE() THEN 'activo' ELSE 'vencido' END AS estado,             MAX(membresias.fecha_inicial) as f_inicial, 
-                    MAX(membresias.fecha_limite) as f_limite, 
-                    TIMESTAMPDIFF(DAY,CURDATE(),MAX(membresias.fecha_limite)) as dias_restantes ,
+                    CASE WHEN membresias.fecha_limite > CURDATE() THEN 'activo' ELSE 'vencido' END AS estado,             membresias.fecha_inicial as f_inicial, 
+                    membresias.fecha_limite as f_limite, 
+                    TIMESTAMPDIFF(DAY,CURDATE(),membresias.fecha_limite) as dias_restantes ,
                     clientes.saldo as saldo FROM clientes INNER JOIN membresias ON clientes.id = membresias.id_clientes INNER JOIN planes ON clientes.id_planes = planes.id GROUP BY clientes.id;";
 
             $stmt = $bd->prepare($sql);
