@@ -65,6 +65,18 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             echo $obj->clientPay($id, $monto, $usuario_sesion);
             exit;
         }
+        if ($accion === 'client_renew') {
+
+            $usuario_sesion = $_SESSION['cedula'];
+            $id = $_POST['id'];
+            $plan = $_POST['plan'];
+            $monto = $_POST['monto'];
+            $fecha_inicial = $_POST['fecha_inicial'];
+            $fecha_limite = $_POST['fecha_limite'];
+
+            echo $obj->clientRenew($usuario_sesion,$id,$plan, $monto, $fecha_inicial,$fecha_limite);
+            exit;
+        }
 
         if ($accion === 'info_client_pay') {
             
