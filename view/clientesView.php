@@ -145,7 +145,7 @@
                                 <div class="col-8">
                                     <div class="form-floating mb-3">
 
-                                        <input class="form-control validar" type="number" min="0.0" max="200.0" name="monto" id="monto" placeholder="">
+                                        <input class="form-control validar" type="number" step="0.1" min="0.0" max="300.0" name="monto" id="monto" placeholder="">
                                         <label for="monto" class="form-label">Monto a pagar</label>
                                         <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
@@ -250,7 +250,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" name="montoPay" id="montoPay" type="number" min="0.0" max="200.0" placeholder="">
+                                        <input class="form-control" name="montoPay" id="montoPay" type="number" step="0.1" min="0.0" max="200.0" placeholder="">
                                         <label for="montoPay" class="form-label">Monto a pagar</label>
                                         <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
@@ -262,6 +262,116 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" id='pagar' class="btn btn-success">Pagar $</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal renovar -->
+    <!-- Modal -->
+    <div class="modal fade" id="modalRenovacion" tabindex="-1" aria-labelledby="modalRenovacionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalRenovacionLabel">Renovar membresia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="POST" id="formUserRenew">
+                    <div class="modal-body">
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+
+                                        <input class="form-control" name="cedulaRenew" id="cedulaRenew" placeholder="" readonly disabled>
+                                        <label for="cedulaRenew" class="form-label">Cedula</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+
+                                        <input class="form-control" name="nombreRenew" id="nombreRenew" placeholder="" readonly disabled>
+                                        <label for="nombreRenew" class="form-label">Nombre</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+
+                                        <select class="form-control renew" name="planesRenew" id="planesRenew" aria-label="Floating label planes">
+                                            <option value="" hidden selected>Seleccionar opcion</option>
+
+                                            <?php foreach ($planes as $plan) : ?>
+
+                                                <option value="<?= $plan['id'] ?>"> <?= $plan['nombre'] ?> </option>
+
+                                            <?php endforeach ?>
+                                        </select>
+                                        <label for="planesRenew">Plan <span class="text-danger">*</span></label>
+                                        <div class="invalid-feedback">Por favor ingrese una opcion válida.</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="precioRenew" id="precioRenew" placeholder="" readonly disabled>
+                                        <label for="precioRenew" class="form-label">Precio</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="saldoRenew" id="saldoRenew" placeholder="" readonly disabled>
+                                        <label for="saldoRenew" class="form-label">Saldo Antes</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="totalToPay" id="totalToPay" placeholder="" disabled>
+                                        <label for="totalToPay" class="form-label">Total a Pagar</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control renew" name="montoRenew" id="montoRenew" step="0.1" type="number" min="0.0" max="300.0" placeholder="">
+                                        <label for="montoRenew" class="form-label">Monto a pagar <span class="text-danger">*</span></label>
+                                        <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" name="saldoNewRenew" id="saldoNewRenew" placeholder="" disabled>
+                                        <label for="saldoNewRenew" class="form-label">Saldo Nuevo</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="fecha_inicial_renew" class="form-label">F. Inicial <span class="text-danger">*</span></label>
+                                    <input class="form-control renew" type="date" name="fecha_inicial_renew" id="fecha_inicial_renew">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fecha_limite_renew" class="form-label">F. Limite <span class="text-danger">*</span></label>
+                                    <input class="form-control renew" type="date" name="fecha_limite_renew" id="fecha_limite_renew">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" id='btn-renovar' class="btn btn-warning">Renovar</button>
                     </div>
                 </form>
             </div>
