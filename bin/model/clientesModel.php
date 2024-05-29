@@ -450,6 +450,89 @@ class clientesModel extends connectDB{
         }
     }
 
+    public function clientRenew($usuario_sesion,$id,$plan, $monto, $fecha_inicio, $fecha_limite){
+        try {
+
+            if (!$this->valString('/^[0-9]{7,10}$/', $usuario_sesion) ||
+                !$this->valString('/^[0-9]{1,50}$/', $id) ||
+                !$this->valString('/^[0-9]{1,10}$/', $plan) ||
+                !$this->valString('/^\d+(\.\d)?$/', $monto) ||
+                !$this->valString('/^(?:(?:1[6-9]|[2-9]\d)?\d{2})(?:(?:(\/|-|\.)(?:0?[13578]|1[02])\1(?:31))|(?:(\/|-|\.)(?:0?[13-9]|1[0-2])\2(?:29|30)))$|^(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\/|-|\.)0?2\3(?:29)$|^(?:(?:1[6-9]|[2-9]\d)?\d{2})(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:0?[1-9]|1\d|2[0-8])$/', $fecha_inicio) ||
+
+                !$this->valString('/^(?:(?:1[6-9]|[2-9]\d)?\d{2})(?:(?:(\/|-|\.)(?:0?[13578]|1[02])\1(?:31))|(?:(\/|-|\.)(?:0?[13-9]|1[0-2])\2(?:29|30)))$|^(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\/|-|\.)0?2\3(?:29)$|^(?:(?:1[6-9]|[2-9]\d)?\d{2})(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:0?[1-9]|1\d|2[0-8])$/', $fecha_limite)
+            ) {
+                http_response_code(400);
+                return 'Carácteres inválidos';
+            }
+
+            if (!$this->existIdUser($id)) {
+                http_response_code(400);
+                return "Usuario no existe";
+            }
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $bd->beginTransaction();
+
+            //registro del pago
+
+            $sql = "INSERT INTO pagos (id_usuarios,id_clientes, fecha_pago, monto) 
+            VALUES (:id_usuarios,:id, CURDATE(), :monto)";
+
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(
+                ":id"           => $id,
+                ":id_usuarios"  => $usuario_sesion,
+                ":monto"        => $monto,
+            ));
+
+            // Obtener el precio del plan 
+            $sql = "SELECT valor FROM planes WHERE id = :plan;";
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(":plan" => $plan));
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$resultado) {
+                http_response_code(400);
+                throw new Exception("No se encontró el precio del plan.");
+            }
+
+            $valorPlan = $resultado['valor'];
+
+            //actualizacion de saldo
+            $sql = "UPDATE clientes SET saldo = (saldo - :valorPlan) + :monto WHERE id = :id";
+
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(
+                ":id"       => $id,
+                ":valorPlan" => $valorPlan,
+                ":monto"    => $monto,
+            ));
+
+            //actualizacion de renovacion
+            $sql = "UPDATE membresias 
+            SET id_planes = :plan, fecha_inicial = :fecha_inicio, fecha_limite = :fecha_limite WHERE id_clientes = :id_clientes";
+
+            $stmt = $bd->prepare($sql);
+            $stmt->execute(array(
+                ":id_clientes"  => $id,
+                ":plan"         => $plan,
+                ":fecha_inicio" => $fecha_inicio,
+                ":fecha_limite" => $fecha_limite,
+            ));
+
+            $bd->commit();
+            http_response_code(200);
+            return 'Actualización de membresia con exito';
+        } catch (PDOException $e) {
+            // Revertir la transacción en caso de error
+            $bd->rollBack();
+            http_response_code(500);
+            return $e->getMessage();
+        }
+    }
+
     private function existUser($cedula)
     {
         try {
