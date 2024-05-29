@@ -85,12 +85,12 @@
 
                                             <?php endforeach ?>
                                         </select>
-                                        <label for="cliente">Cliente</label>
+                                        <label for="cliente">Cliente <span class="text-danger">*</span></label>
                                         <div class="invalid-feedback">Por favor ingrese una opcion válida.</div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
 
                                 <div class="col-6">
@@ -111,8 +111,8 @@
 
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" name="montoPay" id="montoPay" type="number" min="0.0" max="200.0" placeholder="">
-                                        <label for="montoPay" class="form-label">Monto a pagar</label>
+                                        <input class="form-control validar" name="montoPay" id="montoPay" type="number" step="0.1" min="0.0" max="200.0" placeholder="">
+                                        <label for="montoPay" class="form-label">Monto a pagar <span class="text-danger">*</span></label>
                                         <div class="invalid-feedback">Por favor ingrese un monto válido.</div>
                                     </div>
                                 </div>
