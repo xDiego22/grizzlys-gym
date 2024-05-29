@@ -36,7 +36,7 @@ $(function () {
         },
       },
     },
-    order: [[1, "asc"]],
+    order: [[3, "asc"]],
     language: {
       url: "./assets/es-ES.json",
     },
@@ -75,7 +75,7 @@ $(function () {
             btn_pagar = "<button type='button' class='btn btn-success me-1' data-bs-toggle='modal' data-bs-target='#modalPay' onclick='modalPay(this)'><i class='bi bi-currency-dollar'></i></button>";
           }
 
-          const btn_renew = "<button type='button' class='btn btn-warning me-1' data-bs-toggle='modal' data-bs-target='#modalRenew' onclick='renew(this)'><i class='bi bi-calendar-plus-fill text-white'></i></button>";
+          const btn_renew = "<button type='button' class='btn btn-warning me-1' data-bs-toggle='modal' data-bs-target='#modalRenovacion' onclick='modalRenew(this)'><i class='bi bi-calendar-plus-fill text-white'></i></button>";
 
           const btn_edit = "<button type='button' class='btn btn-primary me-1' data-bs-toggle='modal' data-bs-target='#modalGestion' onclick='modalEditar(this)' ><i class='bi bi-pencil-fill'></i></button>";
 
@@ -202,6 +202,29 @@ $(function () {
     validateKeyUp($("#montoPay"), /^\d+(\.\d)?$/);
   });
 
+  $("#montoRenew").keyup(() => {
+    actualizarSaldoRenew();
+    validateKeyUp($("#montoRenew"), /^\d+(\.\d)?$/);
+  });
+
+  $("#planesRenew").change(() => {
+    validateKeyUp($("#planesRenew"), /^[a-zA-Z0-9\s]+$/);
+    changePlanRenew();
+  });
+
+  $("#fecha_inicial_renew").change(() =>
+    validateKeyUp(
+      $("#fecha_inicial_renew"),
+      /^(?:(?:1[6-9]|[2-9]\d)?\d{2})(?:(?:(\/|-|\.)(?:0?[13578]|1[02])\1(?:31))|(?:(\/|-|\.)(?:0?[13-9]|1[0-2])\2(?:29|30)))$|^(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\/|-|\.)0?2\3(?:29)$|^(?:(?:1[6-9]|[2-9]\d)?\d{2})(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:0?[1-9]|1\d|2[0-8])$/
+    )
+  );
+  $("#fecha_limite_renew").change(() =>
+    validateKeyUp(
+      $("#fecha_limite_renew"),
+      /^(?:(?:1[6-9]|[2-9]\d)?\d{2})(?:(?:(\/|-|\.)(?:0?[13578]|1[02])\1(?:31))|(?:(\/|-|\.)(?:0?[13-9]|1[0-2])\2(?:29|30)))$|^(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\/|-|\.)0?2\3(?:29)$|^(?:(?:1[6-9]|[2-9]\d)?\d{2})(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:0?[1-9]|1\d|2[0-8])$/
+    )
+  );
+
   //fin validaciones
 
   $("#formManageUser").submit(function (event) {
@@ -305,6 +328,73 @@ $(function () {
       },
       complete: function () {
         enableFormPay();
+      },
+    });
+
+  });
+
+  $("#formUserRenew").submit(function (e) { 
+    e.preventDefault();
+
+    allFieldsValidated = true;
+
+    validateKeyUp($("#planesRenew"), /^[a-zA-Z0-9\s]+$/);
+    validateKeyUp($("#montoRenew"), /^[a-zA-Z0-9\s]+$/);
+    
+    $(".renew").each(function () {
+      if (!$(this).hasClass("is-valid")) {
+        $(this).addClass("is-invalid");
+        allFieldsValidated = false;
+        return;
+      }
+    });
+
+    if (!allFieldsValidated) {
+      Toast.fire({
+        icon: "error",
+        title: "Campos inválidos",
+      });
+    }
+
+    const data = new FormData();
+    
+    data.append("accion", "client_renew");
+    data.append("id", id);
+    data.append("plan", $("#planesRenew").val());
+    data.append("fecha_inicial", $("#fecha_inicial_renew").val());
+    data.append("fecha_limite", $("#fecha_limite_renew").val());
+    data.append("monto", $("#montoRenew").val());
+
+    $.ajax({
+      async: true,
+      url: " ",
+      type: "POST",
+      contentType: false,
+      data: data,
+      processData: false,
+      cache: false,
+      beforeSend: function () {
+        disableFormRenew();
+      },
+      success: function (response) {
+        tabla.ajax.reload(null, false);
+
+        Toast.fire({
+          icon: "success",
+          title: `${response}`,
+        });
+
+        $("#modalRenovacion").modal("hide");
+        clearFormRenew();
+      },
+      error: function ({ responseText }, status, error) {
+        Toast.fire({
+          icon: "error",
+          title: `${responseText}`,
+        });
+      },
+      complete: function () {
+        enableFormRenew();
       },
     });
 
@@ -429,6 +519,45 @@ function changePlan() {
         
     
 }
+function changePlanRenew() {
+   
+        if (!$("#planesRenew").val()) {
+            $("#precioRenew").val("");
+            actualizarSaldoRenew();
+            return
+        }; 
+        const data = new FormData();
+
+        data.append("accion", 'valor_plan');
+        data.append("planes", $("#planesRenew").val());
+
+        $.ajax({
+            async: true,
+            url: " ",
+            type: "POST",
+            contentType: false,
+            data: data,
+            processData: false,
+            cache: false,
+            success: function (response) {
+
+                const { valor } = JSON.parse(response);
+
+                
+                
+                $("#precioRenew").val(parseFloat(valor) + "$");
+                actualizarSaldoRenew();
+            },
+            error: function ({ responseText }, status, error) {
+                Toast.fire({
+                    icon: "error",
+                    title: `${responseText}`,
+                });
+            }
+        });
+        
+    
+}
 
 function actualizarSaldo() {
   const precio = parseFloat($("#precio_plan").val()) || 0;
@@ -445,7 +574,6 @@ function actualizarSaldo() {
     }
     $("#saldo").val(resultado === "" ? "" : `${resultado}$`);
 }
-
 
 function validateKeyPress(event, regex) {
     const keyPressed = event.key;
@@ -570,6 +698,64 @@ function modalPay(fila) {
      },
    });
 }
+function modalRenew(fila) {
+  id = null;
+
+  $("#planesRenew").val("");
+  $("#montoRenew").val("");
+
+  if ($("#montoRenew").hasClass("is-invalid")) {
+    $("#montoRenew").removeClass("is-invalid");
+  }
+
+  // Obtener el ID único de la fila seleccionada
+  let idFila = $(fila).closest("tr").data("id");
+
+  // Buscar el índice de la fila correspondiente al ID único
+  let indiceFila = tabla.row('[data-id="' + idFila + '"]').index();
+
+  id = tabla.cell(indiceFila, 0).data();
+
+  const data = new FormData();
+
+  data.append("accion", "info_client_pay");
+  data.append("id", id);
+
+   $.ajax({
+     async: true,
+     url: " ",
+     type: "POST",
+     contentType: false,
+     data: data,
+     processData: false,
+     cache: false,
+     success: function (response) {
+       let { cedula, nombre, id_plan, valor, saldo } = JSON.parse(response);
+       
+       valor = (!isNaN(valor) ? parseFloat(valor) : null);
+
+       saldo = (!isNaN(saldo) ? parseFloat(saldo) : null);
+
+       $("#cedulaRenew").val(cedula);
+       $("#nombreRenew").val(nombre);
+       $("#planesRenew").val(id_plan);
+       $("#precioRenew").val(valor + "$");
+       $("#saldoRenew").val(saldo + "$");
+
+       total = (saldo) - (valor);
+
+       $("#totalToPay").val(Math.abs(total) + "$");
+       $("#saldoNewRenew").val(total + "$");
+       
+     },
+     error: function ({ responseText }, status, error) {
+       Toast.fire({
+         icon: "error",
+         title: `${responseText}`,
+       });
+     },
+   });
+}
 
 function modalRegistrar() {
 
@@ -642,6 +828,28 @@ function clearForm() {
 }
 
 
+function actualizarSaldoRenew() {
+  const precio = parseFloat($("#precioRenew").val()) || 0;
+  const saldo = parseFloat($("#saldoRenew").val()) || 0;
+  const monto = parseFloat($("#montoRenew").val()) || 0;
+
+  let resultado = NaN;
+  if (!isNaN(precio) && !isNaN(saldo) && !isNaN(monto)) {
+    resultado =  (saldo - precio) + monto;
+
+    let total = (precio) - (saldo);
+    $("#totalToPay").val(Math.abs(total) + "$");
+
+    // Verificar si el resultado tiene decimales
+    if (resultado !== parseInt(resultado)) {
+      // Si tiene decimales, mostrar el resultado con un decimal
+      resultado = resultado.toFixed(1);
+    }
+  }
+  
+  
+  $("#saldoNewRenew").val(resultado === "" ? "" : `${resultado}$`);
+}
 function actualizarSaldoPay() {
   const saldo = parseFloat($("#saldoPay").val()) || 0;
   const monto = parseFloat($("#montoPay").val()) || 0;
@@ -666,4 +874,37 @@ function clearFormPay() {
   $("#precioPay").val("");
   $("#saldoPay").val("");
   $("#montoPay").val("");
+
+  $("#montoPay").removeClass("is-invalid");
+  $("#montoPay").removeClass("is-valid");
+
+
+}
+function clearFormRenew() {
+  $(".renew").each((index, input) => {
+    input.value = "";
+    input.classList.remove("is-valid");
+    input.classList.remove("is-invalid");
+  });
+}
+
+function disableFormRenew() {
+  $("#btn-renovar").addClass("disabled");
+
+  const loadingSpinner = `<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>`;
+
+  $("#btn-renovar").html(loadingSpinner);
+
+  $(".renew").each((index, input) => {
+    input.disabled = true;
+  });
+}
+function enableFormRenew() {
+  $("#btn-renovar").removeClass("disabled");
+
+  $("#btn-renovar").html("Renovar");
+
+   $(".renew").each((index, input) => {
+     input.disabled = false;
+   });
 }
