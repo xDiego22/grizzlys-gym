@@ -16,7 +16,7 @@ $(function () {
   tabla = $("#tablePagos").DataTable({
     responsive: true,
     pagingType: "simple_numbers",
-    order: false,
+    order: [0,'desc'],
     language: {
       url: "./assets/es-ES.json",
     },
@@ -69,7 +69,10 @@ $(function () {
 
 
     $("#cliente").change(() => {
+      validateKeyUp($("#cliente"), /^[a-zA-Z0-9\s]+$/);
 
+    });
+    $("#cliente").change(() => {
         const data = new FormData();
 
         data.append("accion", "info_client_pay");
@@ -117,11 +120,13 @@ $(function () {
 
     allFieldsValidated = true;
 
-    if (!$("#montoPay").hasClass("is-valid")) {
-      $("#montoPay").addClass("is-invalid");
-      allFieldsValidated = false;
-      return;
-    }
+    $(".validar").each(function () {
+      if (!$(this).hasClass("is-valid")) {
+        $(this).addClass("is-invalid");
+        allFieldsValidated = false;
+        return;
+      }
+    });
 
     if (!allFieldsValidated) {
       Toast.fire({
@@ -179,14 +184,18 @@ $(function () {
 
     $("#pagar").html(loadingSpinner);
 
-    $("#montoPay").attr("disabled", true);
+    $(".validar").each((index, input) => {
+      input.disabled = true;
+    });
   }
   function enableFormPay() {
     $("#pagar").removeClass("disabled");
 
     $("#pagar").html("Pagar$");
 
-    $("#montoPay").attr("disabled", false);
+    $(".validar").each((index, input) => {
+      input.disabled = false;
+    });
   }
 
 });
@@ -223,8 +232,12 @@ function actualizarSaldoPay() {
 
 function clearFormPay() {
   
-  $("#cliente").val("");
   $("#saldoNewPay").val("");
   $("#saldoPay").val("");
-  $("#montoPay").val("");
+
+  $(".validar").each((index, input) => {
+    input.value = "";
+    input.classList.remove("is-valid");
+    input.classList.remove("is-invalid");
+  });
 }
