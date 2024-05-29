@@ -369,7 +369,7 @@ class clientesModel extends connectDB{
             $bd = $this->conexion();
             $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $sql = "SELECT c.cedula AS 'cedula', c.nombre AS 'nombre', p.nombre AS 'plan', p.valor AS 'valor', c.saldo AS 'saldo' FROM clientes c INNER JOIN planes p ON p.id = c.id_planes WHERE c.id = ?;";
+            $sql = "SELECT c.cedula AS 'cedula', c.nombre AS 'nombre', p.id as 'id_plan', p.nombre AS 'plan', p.valor AS 'valor', c.saldo AS 'saldo' FROM clientes c INNER JOIN planes p ON p.id = c.id_planes WHERE c.id = ?;";
 
             $stmt = $bd->prepare($sql);
 
