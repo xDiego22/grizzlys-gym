@@ -14,7 +14,13 @@
 
 				if($request["pagina"] !== "login") session_start();
 
-				$this->pagina = $request["pagina"];
+				if((!isset($_SESSION['cedula']) || empty($_SESSION['cedula'])) && $request["pagina"] !== 'login' && $request["pagina"] !== 'error404'){
+					
+					$this->pagina = "logout";
+				}else{
+					$this->pagina = $request["pagina"];
+				}
+
 				$system = new configSystem();
 				$this->directory = $system->_Dir_Control_();
 				$this->controlador = $system->_Control_();
