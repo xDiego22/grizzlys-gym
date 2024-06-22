@@ -93,7 +93,7 @@ class clientesModel extends connectDB{
         }
     }
 
-    public function registerClient($cedula, $nombre, $telefono, $plan, $monto, $fecha_inicio, $fecha_limite){
+    public function registerClient($cedula, $nombre, $telefono, $plan, $monto, $fecha_inicio, $fecha_limite, $usuario_sesion){
         try {
 
             if (
@@ -102,6 +102,7 @@ class clientesModel extends connectDB{
                 !$this->valString('/^0(4\d{9})$/', $telefono) ||
                 !$this->valString('/^[0-9]{1,10}$/', $plan) ||
                 !$this->valString('/^\d+(\.\d)?$/', $monto) ||
+                !$this->valString('/^[0-9]{7,10}$/', $usuario_sesion) ||
 
                 !$this->valString('/^(?:(?:1[6-9]|[2-9]\d)?\d{2})(?:(?:(\/|-|\.)(?:0?[13578]|1[02])\1(?:31))|(?:(\/|-|\.)(?:0?[13-9]|1[0-2])\2(?:29|30)))$|^(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\/|-|\.)0?2\3(?:29)$|^(?:(?:1[6-9]|[2-9]\d)?\d{2})(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:0?[1-9]|1\d|2[0-8])$/', $fecha_inicio) ||
 
@@ -163,13 +164,14 @@ class clientesModel extends connectDB{
 
             // <---  pago  ---->
 
-            $sql = "INSERT INTO pagos (id_clientes, monto,fecha_pago) VALUES (?, ?, CURDATE())";
+            $sql = "INSERT INTO pagos (id_clientes, monto,fecha_pago, id_usuarios) VALUES (?, ?, CURDATE(), ?)";
 
             $stmt = $bd->prepare($sql);
 
             $stmt->execute(array(
                 $id_cliente,
                 $monto,
+                $usuario_sesion,
             ));
 
             // Confirmar la transacción

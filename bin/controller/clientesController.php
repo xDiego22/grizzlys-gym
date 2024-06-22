@@ -31,8 +31,9 @@ if (is_file($config->_Dir_View_() . $pagina . $config->_VIEW_())) {
             $monto = $_POST['monto'];
             $fecha_inicial = $_POST['fecha_inicial'];
             $fecha_limite = $_POST['fecha_limite'];
+            $usuario_sesion = $_SESSION['cedula'];
             
-            echo $obj->registerClient($cedula,$nombre,$telefono,$plan,$monto,$fecha_inicial,$fecha_limite);
+            echo $obj->registerClient($cedula,$nombre,$telefono,$plan,$monto,$fecha_inicial,$fecha_limite, $usuario_sesion);
             exit;
         }
 
