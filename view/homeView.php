@@ -24,7 +24,7 @@
                     <div class="row mt-4">
 
                         <!-- Ingreso (mensual) Card-->
-                        <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="col-xl-6 col-md-6 mb-4">
                             <div class="card border border-2 border-success rounded-4 shadow h-100 py-2 bg-opacity-10 bg-success">
                                 <div class="card-body">
                                     <div class="row align-items-center">
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <!-- Clientes Activos Card-->
-                        <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="col-xl-6 col-md-6 mb-4">
                             <div class="card border border-2 border-primary rounded-4 shadow h-100 py-2 bg-opacity-10 bg-primary">
                                 <div class="card-body">
                                     <div class="row align-items-center">
@@ -64,7 +64,7 @@
 
                     <div class="row">
 
-                        <div class="col-xl-6">
+                        <div class="col-xl-12">
                             <div class="card mb-4" >
                                 <div class="card-header">
                                     <i class="fas fa-chart-bar me-1"></i>
