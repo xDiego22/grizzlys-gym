@@ -90,6 +90,11 @@ class usuariosModel extends connectDB{
                 return "Usuario ya existe";
             }
 
+            if ($this->existCorreo($correo)) {
+                http_response_code(400);
+                return "Correo ya pertenece a un usuario";
+            }
+
             if ($contrasena !== $contrasena2) {
                 http_response_code(400);
                 return "Contraseñas no coinciden";
@@ -138,6 +143,11 @@ class usuariosModel extends connectDB{
             if (!$this->existUser($cedula)) {
                 http_response_code(400);
                 return "Usuario no existe";
+            }
+
+            if ($this->existCorreo($correo) && $cedula != $this->propietarioCorreo($correo)) {
+                http_response_code(400);
+                return "Correo pertenece a otro usuario";
             }
 
             if ($contrasena !== $contrasena2){
@@ -235,6 +245,66 @@ class usuariosModel extends connectDB{
                 return false;
             }
             
+        } catch (PDOException $e) {
+            http_response_code(500);
+            return 'ERROR: ' . $e->getMessage();
+        }
+    }
+
+    private function existCorreo($correo)
+    {
+        try {
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "SELECT correo FROM usuarios WHERE correo = :correo ";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute(array(
+                ":correo" => $correo
+            ));
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resultado) {
+                http_response_code(200);
+                return true;
+            } else {
+                http_response_code(500);
+                return false;
+            }
+        } catch (PDOException $e) {
+            http_response_code(500);
+            return 'ERROR: ' . $e->getMessage();
+        }
+    }
+
+    private function propietarioCorreo($correo)
+    {
+        try {
+
+            $bd = $this->conexion();
+            $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "SELECT cedula FROM usuarios WHERE correo = :correo LIMIT 1";
+
+            $stmt = $bd->prepare($sql);
+
+            $stmt->execute(array(
+                ":correo" => $correo
+            ));
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($resultado) {
+                http_response_code(200);
+                return $resultado['cedula'];
+            } else {
+                http_response_code(500);
+                return false;
+            }
         } catch (PDOException $e) {
             http_response_code(500);
             return 'ERROR: ' . $e->getMessage();
