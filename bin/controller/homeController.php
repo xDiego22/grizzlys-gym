@@ -22,12 +22,7 @@ if (is_file($config->_Dir_View_().$pagina.$config->_VIEW_())) {
     if(isset($_POST['accion'])){			
  
         $accion = $_POST['accion'];
-
-        if($accion == 'busqueda'){
-            
-           
-            exit;
-        }		
+        		
         if($accion == 'historypays'){
             
             $anio = $_POST['anioActual'];
