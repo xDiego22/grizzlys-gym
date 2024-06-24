@@ -107,7 +107,7 @@ $(function () {
 
         allFieldsValidatedEdit = true; 
 
-        $("validar_editar").each(function () {
+        $(".validar_editar").each(function () {
             if (!$(this).hasClass("is-valid")) {
                 
                 $(this).addClass("is-invalid");
@@ -180,7 +180,7 @@ $(function () {
 
       allFieldsValidatedPassword = true;
 
-      $("validar_password").each(function () {
+      $(".validar_password").each(function () {
         if (!$(this).hasClass("is-valid")) {
           $(this).addClass("is-invalid");
           allFieldsValidatedPassword = false;
@@ -243,7 +243,7 @@ $(function () {
 
         $("#editar").html(loadingSpinner);
 
-        $("validar_editar").each((index,input)=>{
+        $(".validar_editar").each((index,input)=>{
 
             input.disabled = true;
 
@@ -255,7 +255,7 @@ $(function () {
 
         $("#editar").html("Editar");
 
-        $("validar_editar").each((index,input)=>{
+        $(".validar_editar").each((index,input)=>{
 
 
             input.disabled = false;
