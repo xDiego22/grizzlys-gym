@@ -14,6 +14,6 @@
 
 	use bin\controller\frontController as frontController;
 
-	$IndexSystem = new frontController($_REQUEST);
+	$IndexSystem = new frontController($_REQUEST); 
 
  ?>
